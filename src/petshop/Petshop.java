@@ -5,10 +5,12 @@
  */
 package petshop;
 
-import Models.Aves;
-import Models.CaesGatos;
-import Models.Pessoa;
+import Models.Bird;
+import Models.DogCat;
+import Models.Owner;
+import Models.Phone;
 import Utils.HibernateUtil;
+import java.util.Collection;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -25,33 +27,36 @@ public class Petshop {
         SessionFactory sf = HibernateUtil.getSessionFactory();
         Session s = sf.openSession();
         
-        Pessoa pes1 = new Pessoa();
-        Pessoa pes2 = new Pessoa();
-        Aves ave1 = new Aves();
-        Aves ave2 = new Aves();
-        CaesGatos gato1 = new CaesGatos();
+        Owner pes1 = new Owner();
+        Owner pes2 = new Owner();
+        Bird ave1 = new Bird();
+        Bird ave2 = new Bird();
+        DogCat gato1 = new DogCat();
+        
+        Phone phone1 = new Phone(11, 22223333);
         
         ave1.setNmPet("Louro José");
-        ave1.setTamAsa(13.3);
-        ave1.setCor("Verde e amarelo");
-        ave1.setPessoa(pes1);
+        ave1.setWingSize(13.3);
+        ave1.setColor("Verde e amarelo");
+        ave1.setOwner(pes1);
         
         ave2.setNmPet("Arara");
-        ave2.setTamAsa(21.3);
-        ave2.setCor("Vermelho, azul e branco");
-        ave2.setPessoa(pes1);
+        ave2.setWingSize(21.3);
+        ave2.setColor("Vermelho, azul e branco");
+        ave2.setOwner(pes1);
         
         gato1.setNmPet("Miau");
-        gato1.setRaca("Vira-lata");
-        gato1.setTipoPelo("Colorido");
-        gato1.setAltura(45.0);
-        gato1.setPessoa(pes2);
+        gato1.setRace("Vira-lata");
+        gato1.setHairType("Colorido");
+        gato1.setHeight(45.0);
+        gato1.setOwner(pes2);
         
-        pes1.setNmPessoa("Joaquim Teixeira");
-        pes2.setNmPessoa("Mario Brother");
+        pes1.setNmOwner("Joaquim Teixeira");
+        pes1.getPhones().add(phone1);
+        pes2.setNmOwner("Mario Brother");
         
         s.beginTransaction();
-        
+
         s.persist(pes1);
         s.persist(pes2);
         s.persist(ave1);

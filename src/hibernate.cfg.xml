@@ -49,9 +49,9 @@ Contributor(s):
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="hibernate.hbm2ddl.auto">create-drop</property>
-    <mapping class="Models.Aves"/>
-    <mapping class="Models.CaesGatos"/>
-    <mapping class="Models.Pessoa"/>
+    <mapping class="Models.Bird"/>
+    <mapping class="Models.DogCat"/>
+    <mapping class="Models.Owner"/>
     <mapping class="Models.Pet"/>
   </session-factory>
 </hibernate-configuration>

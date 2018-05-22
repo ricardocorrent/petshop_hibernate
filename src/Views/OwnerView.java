@@ -9,12 +9,12 @@ package Views;
  *
  * @author rcorrent
  */
-public class PessoaView extends javax.swing.JFrame {
+public class OwnerView extends javax.swing.JFrame {
 
     /**
      * Creates new form PessoaView
      */
-    public PessoaView() {
+    public OwnerView() {
         initComponents();
         
         startState();
@@ -29,7 +29,7 @@ public class PessoaView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jtpPessoa = new javax.swing.JTabbedPane();
+        jtpOnwer = new javax.swing.JTabbedPane();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jtfOwnerName = new javax.swing.JTextField();
@@ -51,7 +51,7 @@ public class PessoaView extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jtbSearchOwner = new javax.swing.JTable();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jLabel1.setText("Owner name");
 
@@ -62,7 +62,7 @@ public class PessoaView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Area Code", "Number"
+                "ID", "Area Code", "Number"
             }
         ));
         jScrollPane1.setViewportView(jtbPhones);
@@ -81,7 +81,7 @@ public class PessoaView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Pet name"
+                "ID", "Pet name", "Description"
             }
         ));
         jScrollPane2.setViewportView(jtbPets);
@@ -171,17 +171,17 @@ public class PessoaView extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jbtnAdicionarTelefone1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbtnSave)
                     .addComponent(jbtnCancel)
                     .addComponent(jbtnNew)
                     .addComponent(jbtnDelete))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        jtpPessoa.addTab("Register", jPanel1);
+        jtpOnwer.addTab("Register", jPanel1);
 
         jtfValue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,13 +211,11 @@ public class PessoaView extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jtfValue, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jbtnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 1, Short.MAX_VALUE)))
+                        .addComponent(jbtnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -228,24 +226,25 @@ public class PessoaView extends javax.swing.JFrame {
                     .addComponent(jtfValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbtnSearch))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jtpPessoa.addTab("Search", jPanel2);
+        jtpOnwer.addTab("Search", jPanel2);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jtpPessoa)
+            .addComponent(jtpOnwer)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jtpPessoa)
+            .addComponent(jtpOnwer, javax.swing.GroupLayout.PREFERRED_SIZE, 477, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
-        pack();
+        setSize(new java.awt.Dimension(479, 507));
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnAdicionarTelefoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAdicionarTelefoneActionPerformed
@@ -293,20 +292,21 @@ public class PessoaView extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PessoaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnerView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PessoaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnerView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PessoaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnerView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PessoaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(OwnerView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new PessoaView().setVisible(true);
+                new OwnerView().setVisible(true);
             }
         });
     }
@@ -332,11 +332,11 @@ public class PessoaView extends javax.swing.JFrame {
     private javax.swing.JTable jtbSearchOwner;
     private javax.swing.JTextField jtfOwnerName;
     private javax.swing.JTextField jtfValue;
-    private javax.swing.JTabbedPane jtpPessoa;
+    private javax.swing.JTabbedPane jtpOnwer;
     // End of variables declaration//GEN-END:variables
 
 
     public void startState(){
-        jtpPessoa.setEnabledAt(1, false);
+        jtpOnwer.setSelectedIndex(1);
     }
 }

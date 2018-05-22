@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 
 @Entity
-@Table(name = "cad_pet")
+@Table(name = "reg_pet")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Pet {
     
@@ -19,11 +19,14 @@ public class Pet {
     @Column(name = "id_pet")
     private int idPet;
     
-    @Column(name = "nome_pet")
+    @Column(name = "name_pet")
     private String nmPet;
     
+    @Column(name = "description_pet")
+    private String descPet;
+    
     @ManyToOne
-    private Pessoa pessoa; 
+    private Owner owner; 
     
 
     public Pet() {
@@ -45,12 +48,20 @@ public class Pet {
         this.nmPet = nmPet;
     }
 
-    public Pessoa getPessoa() {
-        return pessoa;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
+    }    
+
+    public String getDescPet() {
+        return descPet;
+    }
+
+    public void setDescPet(String descPet) {
+        this.descPet = descPet;
     }
     
     
