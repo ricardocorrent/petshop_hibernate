@@ -48,10 +48,10 @@ Contributor(s):
     <property name="hibernate.connection.password">cascavel1986</property>
     <property name="hibernate.show_sql">true</property>
     <property name="hibernate.current_session_context_class">thread</property>
-    <property name="hibernate.hbm2ddl.auto">create-drop</property>
-    <mapping class="Models.Bird"/>
-    <mapping class="Models.DogCat"/>
-    <mapping class="Models.Owner"/>
-    <mapping class="Models.Pet"/>
+    <property name="hibernate.hbm2ddl.auto">update</property>
+    <mapping class="com.rcorrent.models.Bird"/>
+    <mapping class="com.rcorrent.models.DogCat"/>
+    <mapping class="com.rcorrent.models.Owner"/>
+    <mapping class="com.rcorrent.models.Pet"/>
   </session-factory>
 </hibernate-configuration>
