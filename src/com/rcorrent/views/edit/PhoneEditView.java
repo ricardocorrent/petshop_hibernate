@@ -6,6 +6,7 @@
 package com.rcorrent.views.edit;
 
 import com.rcorrent.dao.GenericDAO;
+import com.rcorrent.models.Owner;
 import com.rcorrent.models.Phone;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,8 @@ import javax.swing.JOptionPane;
  */
 public class PhoneEditView extends javax.swing.JDialog {
     
+    private Owner owner;
     private Integer ownerId;
-    
     private Phone phone;
     
     private final GenericDAO genericDao = new GenericDAO();
@@ -30,12 +31,16 @@ public class PhoneEditView extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         
-        jTabbedPane1.setEnabledAt(1, false);
+        jTabbedPane1.setSelectedIndex(1);
+        jTabbedPane1.setEnabledAt(0, false);
     }
 
     public PhoneEditView(java.awt.Frame parent, boolean modal, Integer ownerId) {
         super(parent, modal);
         this.ownerId = ownerId;
+        owner = new Owner();
+        phone = new Phone();
+        System.out.println("OwnerID: " + this.ownerId);
         initComponents();
         
         //jTabbedPane1.setEnabledAt(1, true);
@@ -204,7 +209,9 @@ public class PhoneEditView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSaveActionPerformed
-        // TODO add your handling code here:
+        if(savePhone()){
+            this.dispose();
+        }
     }//GEN-LAST:event_jbtnSaveActionPerformed
 
     private void jbtnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDeleteActionPerformed
@@ -212,7 +219,7 @@ public class PhoneEditView extends javax.swing.JDialog {
     }//GEN-LAST:event_jbtnDeleteActionPerformed
 
     private void jbtnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelActionPerformed
-        // TODO add your handling code here:
+        this.dispose();
     }//GEN-LAST:event_jbtnCancelActionPerformed
 
     private void jtfValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfValueActionPerformed
@@ -288,25 +295,47 @@ public class PhoneEditView extends javax.swing.JDialog {
     
     public Boolean getPhone(){
         
-        phone = new Phone();
+        Phone p = new Phone();
         String areaCode = jtfAreaCode.getText();
         String number = jtfNumber.getText();
                 
         try {
-            phone.setAc(Integer.parseInt(areaCode.trim()));
+            p.setAc(Integer.parseInt(areaCode.trim()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Enter a valid Area code");            
             return false;
         }
         
         try {
-            phone.setNumber(Long.parseLong(number.trim()));
+            p.setNumber(Long.parseLong(number.trim()));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Enter a valid Number");
             return false;
         }
-        this.phone = phone;
+        this.phone = p;
         return true;
+    }
+    
+    public Boolean savePhone(){
+        try {            
+            setOwner();
+            this.owner.getPhones().add(this.phone);
+            if(genericDao.update(this.owner)){
+                JOptionPane.showMessageDialog(null, "Success on save Phone's numbers!!");
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally{
+            this.dispose();
+        }
+        return false;
+    }
+    
+    public void setOwner(){        
+        this.owner = (Owner) genericDao.getById(Owner.class, this.ownerId); 
+        System.out.println("Owner: " + this.owner.getNmOwner());
     }
 
 }

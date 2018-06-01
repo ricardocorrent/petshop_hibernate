@@ -6,6 +6,11 @@
 package com.rcorrent.dao;
 
 import com.rcorrent.utils.HibernateUtil;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
@@ -76,5 +81,24 @@ public class GenericDAO {
         
     }
     
+    public List listAll(Class javaClass){
+        Session s = sf.openSession();
+        try{
+            Criteria criteria = s.createCriteria(javaClass);
+            return criteria.list();
+        } finally {
+            s.close();
+        }
+    }
     
+    public List findPet(String value){
+        Session s = sf.openSession();
+        try{
+            Query q = s.createQuery("from reg_pet where name_pet:VName");
+            q.setString("VName", value);            
+            return q.list();
+        } finally {
+            s.close();
+        }
+    }
 }

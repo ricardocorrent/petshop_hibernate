@@ -34,6 +34,23 @@ public class JTableUtils {
         }
     }
     
+    /*public static void preencherJTable(JTable jTable, ResultSet resultSet, List<String> campos ){
+        try {            
+            DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+            model.setNumRows(0);            
+            while(resultSet.next()){                
+                Object [] row = new Object[campos.size()];                
+                int contador = 0;                
+                for(String s : campos){
+                    row[contador] = resultSet.getString(s);
+                    contador++;
+                }
+                model.addRow(row);
+            }            
+        } catch (SQLException e) {            
+        }
+    }*/
+    
     public static void formatarJtable(JTable tabela, int valores[]) {
         DefaultTableModel modelo = (DefaultTableModel) tabela.getModel();
         modelo.setNumRows(0);

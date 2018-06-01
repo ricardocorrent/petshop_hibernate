@@ -64,7 +64,7 @@ public class Owner {
 
     public void setPhones(Collection<Phone> phones) {
         this.phones = phones;
-    }
+    }    
 
     public Collection<Pet> getPets() {
         return pets;

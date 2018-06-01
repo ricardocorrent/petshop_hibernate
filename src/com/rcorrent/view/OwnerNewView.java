@@ -287,6 +287,7 @@ public class OwnerNewView extends javax.swing.JFrame {
 
     private void jbtnAddPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAddPhoneActionPerformed
         PhoneEditView phoneAdd = new PhoneEditView(this, true, this.owner.getIdOwner());
+        System.out.println("OwnerID: " + this.owner.getIdOwner());
         phoneAdd.setVisible(true);
     }//GEN-LAST:event_jbtnAddPhoneActionPerformed
 

@@ -9,9 +9,15 @@ import com.rcorrent.dao.GenericDAO;
 import com.rcorrent.models.Bird;
 import com.rcorrent.models.DogCat;
 import com.rcorrent.models.Owner;
+import com.rcorrent.models.Pet;
+import com.rcorrent.models.Phone;
+import com.rcorrent.utils.JTableUtils;
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -34,6 +40,10 @@ public class PetEditView extends javax.swing.JDialog {
         
         /* Initializing button's state*/
         initialState();
+        
+        jtpRegisterPet.setSelectedIndex(1);
+        JTableUtils.formatarJtable(jtPetList, new int[]{20,70,40,150});
+        fillPetTable();
     }
     
     public PetEditView(java.awt.Frame parent, boolean modal, Integer ownerId) {
@@ -84,7 +94,7 @@ public class PetEditView extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtPetList = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -235,18 +245,15 @@ public class PetEditView extends javax.swing.JDialog {
 
         jButton3.setText("New");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtPetList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "NAME", "AGE", "OWNER"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jtPetList);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -391,12 +398,12 @@ public class PetEditView extends javax.swing.JDialog {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton jbtnCancel;
     private javax.swing.JButton jbtnDelete;
     private javax.swing.JButton jbtnSave;
     private javax.swing.JRadioButton jrbBird;
     private javax.swing.JRadioButton jrbDogCat;
+    private javax.swing.JTable jtPetList;
     private javax.swing.JTextField jtfBColor;
     private javax.swing.JTextField jtfBWingSize;
     private javax.swing.JTextField jtfDCBreed;
@@ -408,6 +415,33 @@ public class PetEditView extends javax.swing.JDialog {
     private javax.swing.JTabbedPane jtpRegisterPet;
     // End of variables declaration//GEN-END:variables
     
+    public void fillPetTable(){
+        List listOwner = genericDao.listAll(Owner.class);
+       
+        DefaultTableModel model = (DefaultTableModel) jtPetList.getModel();
+        model.setNumRows(0);
+
+        try {
+            for(Iterator i = listOwner.iterator(); i.hasNext();){            
+                Owner o = (Owner) i.next();                
+                List pets = (List) o.getPets();       
+                
+                for(int ii = 0; ii < pets.size(); ii++){
+                    Pet pet = (Pet) pets.get(ii);
+                    model.addRow(new Object[]{pet.getIdPet(), pet.getNmPet(), pet.getAgePet(), o.getNmOwner()});
+                }
+            }
+        } catch (Exception e) {
+        }
+       
+    }
+    
+    public void searchPet(){
+        List listPet = genericDao.findPet(jtfValue.getText());
+        DefaultTableModel model = (DefaultTableModel) jtPetList.getModel();
+        model.setNumRows(0);
+        
+    }
     
     public Boolean getPet(){
                 
