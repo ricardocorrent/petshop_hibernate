@@ -6,6 +6,7 @@
 package com.rcorrent.petshop;
 
 import com.rcorrent.view.OwnerNewView;
+import com.rcorrent.views.edit.OwnerEditView;
 import com.rcorrent.views.edit.PetEditView;
 import com.rcorrent.views.edit.PhoneEditView;
 import javax.swing.JFrame;
@@ -103,7 +104,8 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-        // TODO add your handling code here:
+        OwnerEditView ownerEdit = new OwnerEditView(this, true);
+        ownerEdit.setVisible(true);
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed

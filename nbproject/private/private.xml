@@ -4,10 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/dao/GenericDAO.java</file>
-            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/petshop/Petshop.java</file>
-            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/models/Owner.java</file>
-            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/hibernate.cfg.xml</file>
+            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/views/edit/OwnerEditView.java</file>
+            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/dao/DogCatDAO.java</file>
             <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/views/edit/PetEditView.java</file>
+            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/petshop/MainView.java</file>
+            <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/dao/BirdDAO.java</file>
             <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/views/edit/PhoneEditView.java</file>
             <file>file:/home/rcorrent/RCorrent/INTEGRADO%20-%20TADS/5º%20SEMESTRE/TOPICOS%20EM%20DB/PROVA_REFEITA/Petshop/src/com/rcorrent/view/OwnerNewView.java</file>
         </group>

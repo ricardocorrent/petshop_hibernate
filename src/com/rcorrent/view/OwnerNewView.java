@@ -13,6 +13,10 @@ import com.rcorrent.models.Phone;
 import com.rcorrent.utils.JTableUtils;
 import com.rcorrent.views.edit.PetEditView;
 import com.rcorrent.views.edit.PhoneEditView;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.Iterator;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -89,9 +93,17 @@ public class OwnerNewView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Area Code", "Number"
+                "Area Code", "Number"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(jtbPhones);
 
         jbtnAddPhone.setText("Add");
@@ -108,9 +120,17 @@ public class OwnerNewView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "Pet name", "Description"
+                "ID", "Pet name", "Age"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane2.setViewportView(jtbPets);
 
         jbtnSave.setText("Save");
@@ -287,13 +307,86 @@ public class OwnerNewView extends javax.swing.JFrame {
 
     private void jbtnAddPhoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAddPhoneActionPerformed
         PhoneEditView phoneAdd = new PhoneEditView(this, true, this.owner.getIdOwner());
-        System.out.println("OwnerID: " + this.owner.getIdOwner());
         phoneAdd.setVisible(true);
+        
+        phoneAdd.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                reloadPhoneList();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
+        
     }//GEN-LAST:event_jbtnAddPhoneActionPerformed
 
     private void jbtnAddPetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnAddPetActionPerformed
         PetEditView petAdd = new PetEditView(this, true, this.owner.getIdOwner());
         petAdd.setVisible(true);
+        
+        petAdd.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                reloadPetList();
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+        });
     }//GEN-LAST:event_jbtnAddPetActionPerformed
 
     private void jtfValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfValueActionPerformed
@@ -311,7 +404,10 @@ public class OwnerNewView extends javax.swing.JFrame {
     private void jbtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSaveActionPerformed
         try {
             if(validadeOwner()){
-                
+                if(this.phone != null && this.pet != null){
+                    JOptionPane.showMessageDialog(null, "Owner created Successfully!!" );
+                    this.dispose();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -393,6 +489,44 @@ public class OwnerNewView extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jtpOnwer;
     // End of variables declaration//GEN-END:variables
 
+    public void reloadPetList(){
+        List listPet = genericDao.listAll(Pet.class);
+        
+        DefaultTableModel model = (DefaultTableModel) jtbPets.getModel();
+        model.setNumRows(0);
+        
+        try{
+            for(Iterator i = listPet.iterator(); i.hasNext();){
+                Pet pet = (Pet) i.next();
+                this.pet = pet;
+                System.out.println("PetName: " + pet.getNmPet());
+                if(pet.getOwner().getIdOwner() == this.owner.getIdOwner()){
+                    model.addRow(new Object[]{pet.getIdPet(), pet.getNmPet(), pet.getAgePet()});
+                
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    public void reloadPhoneList(){
+        
+        Owner o = (Owner) genericDao.getById(Owner.class, this.owner.getIdOwner());
+        
+        DefaultTableModel model = (DefaultTableModel) jtbPhones.getModel();
+        model.setNumRows(0);
+        List listPhone = (List) o.getPhones();
+        try {
+            for(int i = 0; i < o.getPhones().size(); i++){
+                Phone p = (Phone) listPhone.get(i);
+                this.phone = p;
+                model.addRow(new Object[]{p.getAc(), p.getNumber()});
+            }
+        } catch (Exception e) {
+        }
+    }
+    
     public void startRegister(Boolean state){
         
         jbtnAddPhone.setEnabled(state);

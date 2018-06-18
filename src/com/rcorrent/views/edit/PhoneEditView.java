@@ -8,9 +8,14 @@ package com.rcorrent.views.edit;
 import com.rcorrent.dao.GenericDAO;
 import com.rcorrent.models.Owner;
 import com.rcorrent.models.Phone;
+import com.rcorrent.utils.HibernateUtil;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 /**
  *
@@ -33,6 +38,7 @@ public class PhoneEditView extends javax.swing.JDialog {
         
         jTabbedPane1.setSelectedIndex(1);
         jTabbedPane1.setEnabledAt(0, false);
+        fillPhoneTable();
     }
 
     public PhoneEditView(java.awt.Frame parent, boolean modal, Integer ownerId) {
@@ -66,7 +72,7 @@ public class PhoneEditView extends javax.swing.JDialog {
         jbtnCancel = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jtbPhones = new javax.swing.JTable();
         jtfValue = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jbtnNew = new javax.swing.JButton();
@@ -143,15 +149,23 @@ public class PhoneEditView extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("Register", jPanel1);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jtbPhones.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "AC", "Number"
+                "AC", "Number"
             }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jtbPhones);
 
         jtfValue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -160,6 +174,11 @@ public class PhoneEditView extends javax.swing.JDialog {
         });
 
         jButton1.setText("Search");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jbtnNew.setText("New");
 
@@ -197,7 +216,7 @@ public class PhoneEditView extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,6 +244,10 @@ public class PhoneEditView extends javax.swing.JDialog {
     private void jtfValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtfValueActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jtfValueActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -283,11 +306,11 @@ public class PhoneEditView extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JButton jbtnCancel;
     private javax.swing.JButton jbtnDelete;
     private javax.swing.JButton jbtnNew;
     private javax.swing.JButton jbtnSave;
+    private javax.swing.JTable jtbPhones;
     private javax.swing.JTextField jtfAreaCode;
     private javax.swing.JTextField jtfNumber;
     private javax.swing.JTextField jtfValue;
@@ -319,11 +342,18 @@ public class PhoneEditView extends javax.swing.JDialog {
     public Boolean savePhone(){
         try {            
             setOwner();
-            this.owner.getPhones().add(this.phone);
+            if(getPhone()){
+                this.owner.getPhones().add(this.phone);
+            }
+            
+            SessionFactory sf = HibernateUtil.getSessionFactory(); 
+            Session s = sf.openSession();
+            s.beginTransaction();
             if(genericDao.update(this.owner)){
                 JOptionPane.showMessageDialog(null, "Success on save Phone's numbers!!");
                 return true;
             }
+            s.close();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -336,6 +366,29 @@ public class PhoneEditView extends javax.swing.JDialog {
     public void setOwner(){        
         this.owner = (Owner) genericDao.getById(Owner.class, this.ownerId); 
         System.out.println("Owner: " + this.owner.getNmOwner());
+    }
+    
+    public void fillPhoneTable(){
+        List listOwner = genericDao.listAll(Owner.class);
+        
+        DefaultTableModel model = (DefaultTableModel) jtbPhones.getModel();
+        model.setNumRows(0);
+        
+        try {
+            for(Iterator i = listOwner.iterator(); i.hasNext();){     
+                Owner o = (Owner) i.next(); 
+                List listPhone = (List) o.getPhones();
+
+                for(int ii = 0; ii < o.getPhones().size(); ii++){
+                    Phone p = (Phone) listPhone.get(ii);
+                    this.phone = p;
+                    model.addRow(new Object[]{p.getAc(), p.getNumber()});
+                }
+            }
+        
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -28,7 +29,7 @@ public class Owner {
     private String nmOwner;
     
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable (name="owner_phones" , joinColumns = @JoinColumn (name="owner_id")) //nome da tabela e nome do atributo da tabela
     @AttributeOverrides({
         @AttributeOverride(name = "ac", column = @Column(name = "AreaCode")), //sobrescreve o nome da tabela
@@ -37,7 +38,7 @@ public class Owner {
     private Collection<Phone> phones = new ArrayList();
     
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
-    private Collection<Pet> pets = new ArrayList();
+    private Collection<Pet> pets = new ArrayList<Pet>();
     
     public Owner() {
     }

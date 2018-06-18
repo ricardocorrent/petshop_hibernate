@@ -63,6 +63,7 @@ public class Petshop {
         s.persist(ave2);
         s.persist(gato1);
         s.getTransaction().commit();
+        
         s.close();
         
         System.exit(0);

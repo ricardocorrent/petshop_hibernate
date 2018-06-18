@@ -5,7 +5,11 @@
  */
 package com.rcorrent.views.edit;
 
+import com.rcorrent.dao.BirdDAO;
+import com.rcorrent.dao.DogCatDAO;
 import com.rcorrent.dao.GenericDAO;
+import com.rcorrent.dao.PetDAO;
+import com.rcorrent.enuns.Status;
 import com.rcorrent.models.Bird;
 import com.rcorrent.models.DogCat;
 import com.rcorrent.models.Owner;
@@ -25,11 +29,18 @@ import javax.swing.table.DefaultTableModel;
  */
 public class PetEditView extends javax.swing.JDialog {
     
-    private Integer ownerId;
+    private Integer state;
+    private Integer deleteState;
     
+    private Integer ownerId;
+    private Pet pet;
     private DogCat dogCat;
     private Bird bird;
+    
     private final GenericDAO genericDao = new GenericDAO();
+    private final DogCatDAO dogCatDao = new DogCatDAO();
+    private final BirdDAO birdDao = new BirdDAO();
+    private final PetDAO petDao = new PetDAO();
 
     /**
      * Creates new form PetView
@@ -37,13 +48,14 @@ public class PetEditView extends javax.swing.JDialog {
     public PetEditView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+        bird = new Bird();
         /* Initializing button's state*/
         initialState();
         
         jtpRegisterPet.setSelectedIndex(1);
         JTableUtils.formatarJtable(jtPetList, new int[]{20,70,40,150});
         fillPetTable();
+        jtpRegisterPet.setEnabledAt(0, false);
     }
     
     public PetEditView(java.awt.Frame parent, boolean modal, Integer ownerId) {
@@ -92,7 +104,6 @@ public class PetEditView extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         jtfValue = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtPetList = new javax.swing.JTable();
 
@@ -139,6 +150,11 @@ public class PetEditView extends javax.swing.JDialog {
         });
 
         jbtnDelete.setText("Delete");
+        jbtnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtnDeleteActionPerformed(evt);
+            }
+        });
 
         jLabel3.setText("Pet name");
 
@@ -242,17 +258,33 @@ public class PetEditView extends javax.swing.JDialog {
         jtpRegisterPet.addTab("Register", jPanel1);
 
         jButton2.setText("Search");
-
-        jButton3.setText("New");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jtPetList.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "ID", "NAME", "AGE", "OWNER"
+                "ID", "NAME", "AGE", "OWNER", "ID_OWNER"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jtPetList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jtPetListMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jtPetList);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -266,9 +298,7 @@ public class PetEditView extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jtfValue)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -277,8 +307,7 @@ public class PetEditView extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfValue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addContainerGap())
@@ -302,16 +331,29 @@ public class PetEditView extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbtnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnSaveActionPerformed
-        if(getPet()){
-            if(jrbDogCat.isSelected()){
-                genericDao.save(this.dogCat);
-                JOptionPane.showMessageDialog(null, "Dog-Cat Saved Successfully!!" );
-            }else{
-                genericDao.save(this.bird);
-                JOptionPane.showMessageDialog(null, "Bird Saved Successfully!!" );
-                
+        if(this.state == Status.getEditState().getStatus()){
+            
+            if(this.deleteState == Status.getDeleteBirdState().getStatus()){
+                updateBird(this.bird);            
+            }
+            
+            if(this.deleteState == Status.getDeleteDogCatState().getStatus()){
+                updateDogCat(this.dogCat);            
             }            
-            this.dispose();
+            jtpRegisterPet.setEnabledAt(0, false);
+        }else{        
+            if(getPet()){
+
+                if(jrbDogCat.isSelected()){
+                    genericDao.save(this.dogCat);
+                    JOptionPane.showMessageDialog(null, "Dog-Cat Saved Successfully!!" );
+                }else{
+                    genericDao.save(this.bird);
+                    JOptionPane.showMessageDialog(null, "Bird Saved Successfully!!" ); 
+                }
+                jtpRegisterPet.setEnabledAt(0, false);   
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_jbtnSaveActionPerformed
 
@@ -336,6 +378,95 @@ public class PetEditView extends javax.swing.JDialog {
     private void jbtnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnCancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_jbtnCancelActionPerformed
+
+    private void jtPetListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jtPetListMouseClicked
+
+        if(evt.getClickCount() > 1){
+            
+            String idPet = jtPetList.getValueAt(jtPetList.getSelectedRow(), 0).toString();
+            String idOwner = jtPetList.getValueAt(jtPetList.getSelectedRow(), 4).toString();
+
+            this.ownerId = Integer.parseInt(idOwner);
+
+            jtpRegisterPet.setSelectedIndex(0);
+            
+            jtpRegisterPet.setEnabledAt(0, true);
+            
+            this.state = Status.getEditState().getStatus();
+            jbtnDelete.setEnabled(true);
+            
+            cleanAll();
+            
+            try {
+                List<DogCat> dc = dogCatDao.getAllDogCat();
+                for(DogCat d: dc){
+                    if(d.getIdPet() == Integer.parseInt(idPet)){
+                        this.dogCat = d;
+                        selectDogCat(true);
+                        selectBird(false);
+                        jtfPetName.setText(d.getNmPet());
+                        jtfPetAge.setText(d.getAgePet());
+                        jtfDCBreed.setText(d.getBreed());
+                        jtfDCHeight.setText(d.getHeight().toString());
+                        jtfDCHairType.setText(d.getHairType().toString());
+                        
+                        jrbDogCat.setSelected(true);
+                        jrbBird.setSelected(false);                        
+              
+                        this.deleteState = Status.getDeleteDogCatState().getStatus();
+                    }
+                }
+                
+            } catch (Exception e) {
+                System.out.println("Não é dog nem cat!!");               
+            }
+            try {
+                List<Bird> lb = birdDao.getAllBird();
+                for(Bird b: lb){
+                    if(b.getIdPet() == Integer.parseInt(idPet)){
+                        this.bird = b;
+                        selectDogCat(false);
+                        selectBird(true);
+                        jtfPetName.setText(b.getNmPet());
+                        jtfPetAge.setText(b.getAgePet());
+                        jtfBColor.setText(b.getColor());
+                        jtfBWingSize.setText(b.getWingSize().toString());
+                        
+                        jrbBird.setSelected(true);
+                        jrbDogCat.setSelected(false);
+                        
+                        this.deleteState = Status.getDeleteBirdState().getStatus();                        
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Não é bird");
+            }
+        }
+    }//GEN-LAST:event_jtPetListMouseClicked
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jbtnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtnDeleteActionPerformed
+        
+        if (JOptionPane.showConfirmDialog(null, "Wish you really delete Pet?", "DANGER", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            if(this.deleteState == Status.getDeleteBirdState().getStatus()){
+                if(genericDao.delete(this.bird)){
+                    fillPetTable();
+                    jtpRegisterPet.setSelectedIndex(1);
+                    jtpRegisterPet.setEnabledAt(0, false);
+                }
+            }
+            if(this.deleteState == Status.getDeleteDogCatState().getStatus()){
+                if(genericDao.delete(this.dogCat)){
+                    fillPetTable();
+                    jtpRegisterPet.setSelectedIndex(1);
+                    jtpRegisterPet.setEnabledAt(0, false);
+                }
+            }
+        }
+    }//GEN-LAST:event_jbtnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -384,7 +515,6 @@ public class PetEditView extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup btnGrpPet;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -422,22 +552,30 @@ public class PetEditView extends javax.swing.JDialog {
         model.setNumRows(0);
 
         try {
-            for(Iterator i = listOwner.iterator(); i.hasNext();){            
+            for(Iterator i = listOwner.iterator(); i.hasNext();){     
+                
                 Owner o = (Owner) i.next();                
-                List pets = (List) o.getPets();       
+                System.out.println("Owner: " + o.getNmOwner());
+                
+                List pets = (List) o.getPets();
+                
+//                List pets = (List) genericDao.listPet(Pet.class, o.getIdOwner());
+                System.out.println("PetsSize: " + pets.size());
                 
                 for(int ii = 0; ii < pets.size(); ii++){
                     Pet pet = (Pet) pets.get(ii);
-                    model.addRow(new Object[]{pet.getIdPet(), pet.getNmPet(), pet.getAgePet(), o.getNmOwner()});
+                    model.addRow(new Object[]{pet.getIdPet(), pet.getNmPet(), pet.getAgePet(), o.getNmOwner(), o.getIdOwner()});
+                    
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         }
        
     }
     
     public void searchPet(){
-        List listPet = genericDao.findPet(jtfValue.getText());
+        List listPet = petDao.findPet(jtfValue.getText());
         DefaultTableModel model = (DefaultTableModel) jtPetList.getModel();
         model.setNumRows(0);
         
@@ -494,8 +632,6 @@ public class PetEditView extends javax.swing.JDialog {
                 jtfDCHairType.requestFocus();
                 return false;
             }
-            
-            
             
             dc.setNmPet(petName);
             dc.setAgePet(petAge);
@@ -567,4 +703,122 @@ public class PetEditView extends javax.swing.JDialog {
         jbtnSave.setEnabled(false);
     }
     
+    public void cleanAll(){
+        
+    jtfPetName.setText("");
+    jtfPetAge.setText("");
+    
+    jtfDCBreed.setText("");
+    jtfDCHeight.setText("");
+    jtfDCHairType.setText("");
+
+    jtfBColor.setText("");
+    jtfBWingSize.setText("");
+        
+    }
+    
+    public void updateBird(Bird bird){
+
+        String petName = jtfPetName.getText();
+        String petAge = jtfPetAge.getText();
+        petName = petName.trim();
+        petAge = petAge.trim();
+
+        String wingSize = jtfBWingSize.getText();
+        String color = jtfBColor.getText();
+
+        wingSize = wingSize.trim().replace(",", ".");
+        color = color.trim();
+        
+        if(petName.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Name");
+            jtfPetName.requestFocus();
+            return;
+        }
+        if(petAge.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Age");
+            jtfPetAge.requestFocus();
+            return;
+        }       
+
+        try {
+            bird.setWingSize(Double.parseDouble(wingSize));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Enter a valid Pet's Wing Size");
+            jtfBWingSize.requestFocus();
+            return;
+        }
+
+        if(color.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Color");
+            jtfBColor.requestFocus();
+            return;
+        }
+
+        bird.setNmPet(petName);
+        bird.setAgePet(petAge);
+        bird.setColor(color);
+        
+        
+        
+        if(genericDao.update(bird)){
+            JOptionPane.showMessageDialog(null, "Bird Updated Successfully!!" );
+            fillPetTable();
+            jtpRegisterPet.setSelectedIndex(1);
+        }
+    }
+    
+    public void updateDogCat(DogCat dogCat){
+        String petName = jtfPetName.getText();
+        String petAge = jtfPetAge.getText();
+        petName = petName.trim();
+        petAge = petAge.trim();
+                
+        if(petName.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Name");
+            jtfPetName.requestFocus();
+            return;
+        }
+        if(petAge.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Age");
+            jtfPetAge.requestFocus();
+            return;
+        }
+        String height = jtfDCHeight.getText();
+        String breed = jtfDCBreed.getText();
+        String hairType = jtfDCHairType.getText();
+
+        height = height.trim().replace(",", ".");
+        breed = breed.trim();
+        hairType = hairType.trim();
+
+        try {
+            dogCat.setHeight(Double.parseDouble(height));          
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Enter a valid Pet's Height");
+            jtfDCHeight.requestFocus();
+            return;
+        }
+        if(breed.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Breed");
+            jtfDCBreed.requestFocus();
+            return;
+        } 
+        if(hairType.equals("")){
+            JOptionPane.showMessageDialog(null, "Enter Pet's Hair Type");
+            jtfDCHairType.requestFocus();
+            return;
+        }
+
+        dogCat.setNmPet(petName);
+        dogCat.setAgePet(petAge);
+        dogCat.setBreed(breed);
+        dogCat.setHairType(hairType);
+        
+        if(genericDao.update(dogCat)){
+            JOptionPane.showMessageDialog(null, "DogCat Updated Successfully!!" );
+            fillPetTable();
+            jtpRegisterPet.setSelectedIndex(1);
+        }
+    }
 }
